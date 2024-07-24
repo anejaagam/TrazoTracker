@@ -11,15 +11,15 @@ const Home: React.FC = () => {
 
     return (
         <div className='h-screen flex flex-col'>
-           <Header/>
-           <div className="flex justify-center items-center h-full">
-            <div className="grid grid-cols-2 gap-4">
-           <Button onClick={() => {navigate('/inventory')}} img={inventory} text='Inventory' />
-           <Button onClick={() => {navigate('/orders')}} img={orders} text='Orders'/>
-           <Button onClick={() => {navigate('/track')}} img={tracking} text='Tray Track' />
-           <Button onClick={() => {navigate('/products')}} img={products} text='Products'/>
-           </div>
-           </div>
+            <Header />
+            <div className="flex justify-center items-center h-full">
+                <div className="grid grid-cols-2 gap-4">
+                    <Button onClick={() => { navigate('/products') }} img={products} text='Products' />
+                    <Button onClick={() => { navigate('/inventory') }} img={inventory} text='Inventory' />
+                    <Button onClick={() => { navigate('/orders') }} img={orders} text='Orders' />
+                    <Button onClick={() => { navigate('/track') }} img={tracking} text='Tray Track' />
+                </div>
+            </div>
         </div>
     );
 };
