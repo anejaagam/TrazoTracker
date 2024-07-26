@@ -1,115 +1,126 @@
 import React from 'react';
+import TextBox from '../components/textBox';
 
 interface AddProductProps {
     onClose: () => void;
-   
+
 }
 
 
 
-const AddProduct: React.FC<AddProductProps> = ({onClose}) => {
-    const [seeds, setSeeds] = React.useState(true);
-    const [products, setProducts] = React.useState(false);
-    const [misc, setMisc] = React.useState(false);
-    const [powder, setPowder] = React.useState(false);
-    
+const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
+    const [productType, setProductType] = React.useState('greens');
+    const [productName, setProductName] = React.useState('');
+    const [productId, setProductId] = React.useState('');
+    const [productPackages, setProductPackages] = React.useState<string[]>([]);
+    const [productSoldTo, setProductSoldTo] = React.useState<string[]>([]);
+
+    const handleProductSizing = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setProductPackages(prev =>
+            prev.includes(value)
+                ? prev.filter(pkg => pkg !== value)
+                : [...prev, value]
+        );
+    };
+    const handleSoldToChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.id;
+        setProductSoldTo(prev =>
+            prev.includes(value)
+                ? prev.filter(pkg => pkg !== value)
+                : [...prev, value]
+        );
+    };
+
+    const defaultFormClass = 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ';
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
 
-       
+
         onClose();
     };
 
     return (
-        <div className="modal fixed inset-10 flex justify-center items-center bg-black bg-opacity-0 mb-12 rounded">
-            <div className="modal-content bg-white w-1/2 h-full shadow-lg relative flex flex-none flex-col rounded-md gap-4">
-            <div className="flex flex-row w-full p-5 gap-4 bg-green-900 text-white justify-between rounded-t-md">
-                <h2 className='text-lg font-semibold'>Add Inventory Item</h2>
-                <button onClick={onClose} className='text-white justify-end flex text-xl font-black'>X</button>
+        <div className="modal fixed inset-10 flex justify-center items-center bg-black bg-opacity-0 mb-12 rounded ">
+            <div className="modal-content bg-white w-1/2 h-full shadow-lg relative flex flex-none flex-col rounded-md gap-4 overflow-y-auto">
+                <div className="flex flex-row w-full p-5 gap-4 bg-green-900 text-white justify-between rounded-t-md sticky top-0">
+                    <h2 className='text-lg font-semibold'>Add Product</h2>
+                    <button onClick={onClose} className='text-white justify-end flex text-xl font-black'>X</button>
                 </div>
-                
-                <div className="flex flex-row px-10 text-white gap-4 w-full justify-center">
-                <button className="bg-green-600 text-white p-2 rounded focus:bg-green-900" onClick={() => { setProducts(false); setMisc(false); setSeeds(true); } }>Seeds</button>
-                <button className="bg-green-600 text-white p-2 rounded focus:bg-green-900" onClick={() => { setProducts(true); setMisc(false); setSeeds(false); } }>Products</button>
-                <button className="bg-green-600 text-white p-2 rounded focus:bg-green-900" onClick={() => { setProducts(false); setMisc(true); setSeeds(false); } }>Misc</button>
-                </div>
-                {seeds&& <form onSubmit={handleSubmit} className='flex flex-col gap-4 p-5 justify-between h-full'>
-                    <label htmlFor="supplierName" className='flex flex-row gap-2 items-center justify-between'>Supplier Name
-                    <input type="text" id="supplierName" name="supplierName" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' placeholder='' />
-                    </label>
-                    <label htmlFor="seedVariety" className='flex flex-row gap-2 items-center justify-between'>Seed Variety
-                    <input type="text" id="seedVariety" name="seedVariety" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' placeholder='' />
-                    </label>
-                    <label htmlFor="dateOfAcquisition" className='flex flex-row gap-2 items-center justify-between'>Date of Acquisition
-                    <input type="date" id="dateOfAcquisition" name="dateOfAcquisition" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
-                    </label>
-                    <label htmlFor="quantity" className='flex flex-row gap-2 items-center justify-between'>Quantity
-                    <input type="number" id="quantity" name="quantity" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
-                    </label>
-                    <label htmlFor="id" className='flex flex-row gap-2 items-center justify-between'>ID
-                    <input type="text" id="id" name="id" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
-                    </label>
-                    <button type="submit" className=' bg-green-800 p-2 px-4 text-white rounded-md w-min items-center self-center'>Submit</button>
-                    </form>}
 
-                {products&& <form onSubmit={handleSubmit} className='flex flex-col gap-4 p-5 h-full justify-between'>
-                    <label htmlFor="productId" className='flex flex-row gap-2 items-center justify-between'>Product ID
-                        <select id="productId" name="productId" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
-                            <option value="1">Product 1</option>
-                            <option value="2">Product 2</option>
-                            <option value="3">Product 3</option>
-                            {/* Add more options as needed */}
-                        </select>
-                    </label>
+
+
+                <form onSubmit={handleSubmit} className='flex flex-col gap-4 p-5 h-full justify-between'>
                     <label htmlFor="productType" className='flex flex-row gap-2 items-center justify-between'>Product Type
-                        <div className='flex flex-row gap-2'>
-                            <input type="radio" id="refrigerated" name="productType" value="refrigerated" onChange={()=>setPowder(false)} />
-                            <label htmlFor="refrigerated">Refrigerated</label>
-                        </div>
-                        <div  className='flex flex-row gap-2'>
-                            <input type="radio" id="powder" name="productType" value="powder" onChange={()=>setPowder(true)}/>
-                            <label htmlFor="powder">Powder</label>
-                        </div>
-                    </label>
-                    <label htmlFor="productQuantity" className='flex flex-row gap-2 items-center justify-between'>Quantity
-                        <input type="number" id="productQuantity" name="productQuantity" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
-                    </label>
-                    {!powder && <label htmlFor="packageSize" className='flex flex-row gap-2 items-center justify-between'>Package Size
-                        <select id="packageSize" name="packageSize" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
-                            <option value="50">50 Grams</option>
-                            <option value="453">1 lb</option>
-                            <option value="113">4oz Container</option>
-                            <option value="450">450 Grams</option>
-                            <option value="20">Sample Size</option>
+                        <select name="productType" onChange={(e) => {
+                            setProductType(e.target.value);
+                        }} id="productType" className={defaultFormClass + 'w-1/2'}>
+                            <option value="greens" >Greens</option>
+                            <option value="mixes" >Mixes</option>
+                            <option value="powders">Powders</option>
                         </select>
-                    </label>}
-                    <label htmlFor="dateOfHarvest" className='flex flex-row gap-2 items-center justify-between'>Date of Harvest
-                    <input type="date" id="dateOfHarvest" name="dateOfHarvest" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                     </label>
-                    <button type="submit" className=' bg-green-800 p-2 px-4 text-white rounded-md w-min items-center self-center'>Submit</button>
-                    </form>}
+                    <label htmlFor="productName" className='flex flex-row items-center justify-between'>Product Name
+                        <input type="text" id="productName" name="productName" className={defaultFormClass + 'w-1/2'} />
+                    </label>
+                    <label htmlFor="productId" className='flex flex-row items-center justify-between'>Product ID
+                        <div className="w-1/2 flex justify-start">
+                            <label htmlFor="productId" className={defaultFormClass + 'w-full'}>{productType === 'greens' ? 'IGPMG' : productType === 'mixes' ? 'IGPM' : 'IGPMP'}-<input type="text" id="productId" name="productId" className='bg-gray-50 w-max text-gray-900 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white ' /></label>
+                        </div>
+                    </label>
+                    <label htmlFor="productType" className='flex flex-row justify-between items-center'>Product Packages
+                        <div className="grid grid-cols-2 w-1/2 justify-start gap-2">
+                            <label className="flex flex-row gap-2">
+                                <input type="checkbox" id="productPackages50" name="productPackages" className="w-4" value="50" onChange={handleProductSizing} />50g
+                            </label>
+                            <label className="flex flex-row gap-2">
+                                <input type="checkbox" id="productPackages453" name="productPackages" className="w-4" value="453" onChange={handleProductSizing} />1lb
+                            </label>
+                            <label className="flex flex-row gap-2">
+                                <input type="checkbox" id="productPackages113" name="productPackages" className="w-4" value="113" onChange={handleProductSizing} />16oz Container
+                            </label>
+                            <label className="flex flex-row gap-2">
+                                <input type="checkbox" id="productPackages227" name="productPackages" className="w-4" value="227" onChange={handleProductSizing} />24oz Container
+                            </label>
+                            <label className="flex flex-row gap-2">
+                                <input type="checkbox" id="productPackages20" name="productPackages" className="w-4" value="20" onChange={handleProductSizing} />Sample Size
+                            </label>
+                            <label className="flex flex-row gap-2">
+                                <input type="checkbox" id="productPackages150" name="productPackages" className="w-4" value="100" onChange={handleProductSizing} />150g Powder
+                            </label>
+                        </div>
+                    </label>
+                    <label htmlFor='productSoldTo' className='flex flex-row items-center justify-between'>Sold To
+                        <div className="flex justify-start w-1/2 gap-2">
+                            <label className='flex flex-row gap-2'> <input type='checkbox' id='productSoldToFood' name='productSoldTo' className='w-4' onChange={handleSoldToChange} />Food Services</label>
+                            <label className='flex flex-row gap-2'><input type='checkbox' id='productSoldToRetail' name='productSoldTo' className='w-4' onChange={handleSoldToChange} />Retail</label>
+                        </div>
+                    </label>
 
-                {misc&& <form onSubmit={handleSubmit} className='flex flex-col gap-4 h-full justify-between p-5'>
-                    <label htmlFor="miscProduct" className='flex flex-row gap-2 items-center justify-between'>Misc Product
-                        <label htmlFor='miscFertilizer' className='flex flex-row gap-2'><input type='radio' id='miscFertilizer' name='miscProduct' value='Fertilizer' />Fertilizer</label>
-                        <label htmlFor='miscSoil' className='flex flex-row gap-2'><input type='radio' id='miscSoil' name='miscProduct' value='Soil' />Soil</label>
-                        <label htmlFor='PackingMaterial' className='flex flex-row gap-2'><input type='radio' id='miscPackingMaterial' name='miscProduct' value='PackingMaterial' />Packing Material</label>
-                    </label>
-                    <label htmlFor="miscSupplier" className='flex flex-row gap-2 items-center justify-between'>Supplier
-                        <input type="text" id="miscSupplier" name="miscSupplier" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
-                    </label>
-                    <label htmlFor="miscQuantity" className='flex flex-row gap-2 items-center justify-between'>Quantity
-                        <input type="number" id="miscQuantity" name="miscQuantity" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
-                    </label>
-                    <label htmlFor="miscDescription" className='flex flex-row gap-2 items-center justify-between'>Description
-                        <textarea id="miscDescription" name="miscDescription" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
-                    </label>
-                    <label htmlFor="miscDate" className='flex flex-row gap-2 items-center justify-between'>Date of Purchase
-                    <input type="date" id="miscDate" name="miscDate" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
-                    </label>
-                    <button type="submit" className=' bg-green-800 p-2 px-4 text-white rounded-md w-min items-center self-center'>Submit</button>
-                    </form>}
+                    {productSoldTo.length > 0 && productPackages.length > 0 && (
+                        <div className="flex flex-col gap-4">
+                            {productSoldTo.map(soldTo => (
+                                <div key={soldTo}>
+                                    <h3 className="text-lg font-semibold mb-2">{soldTo === 'productSoldToFood' ? 'Food Services Pricing' : 'Retail Pricing'}</h3>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {productPackages.map(pkg => (
+                                            <div key={pkg} className="flex flex-row gap-2 items-center justify-between">
+                                                <label htmlFor={`${soldTo}-${pkg}`} className=''>{
+                                                    pkg === '50' ? '50g' : pkg === '453' ? '1lb' : pkg === '113' ? '16oz Container' : pkg === '227' ? '24oz Container' : pkg === '20' ? 'Sample Size' : '150g'
+                                                }</label>
+                                                <input type='number' id={`${soldTo}-${pkg}`} name={`${soldTo}-${pkg}`} className={defaultFormClass + 'w-1/2'} />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    <button type='submit' className='bg-green-600 text-white p-2 rounded focus:bg-green-700'>Add Product</button>
+                </form>
+
             </div>
         </div>
     );
