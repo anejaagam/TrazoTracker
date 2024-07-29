@@ -50,6 +50,9 @@ const AddForm: React.FC<AddFormProps> = ({onClose}) => {
                     <label htmlFor="id" className='flex flex-row gap-2 items-center justify-between'>ID
                     <input type="text" id="id" name="id" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                     </label>
+                    <label htmlFor='Price' className='flex flex-row gap-2 items-center justify-between'>Price
+                    <input type="number" id="price" name="price" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
+                    </label>
                     <button type="submit" className=' bg-green-800 p-2 px-4 text-white rounded-md w-min items-center self-center'>Submit</button>
                     </form>}
 
@@ -107,6 +110,9 @@ const AddForm: React.FC<AddFormProps> = ({onClose}) => {
                     </label>
                     <label htmlFor="miscDate" className='flex flex-row gap-2 items-center justify-between'>Date of Purchase
                     <input type="date" id="miscDate" name="miscDate" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
+                    </label>
+                    <label htmlFor='Price' className='flex flex-row gap-2 items-center justify-between'>Price
+                    <input type="number" id="price" name="price" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-3/4 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'/>
                     </label>
                     <button type="submit" className=' bg-green-800 p-2 px-4 text-white rounded-md w-min items-center self-center'>Submit</button>
                     </form>}

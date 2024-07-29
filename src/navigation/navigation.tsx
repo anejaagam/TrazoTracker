@@ -16,11 +16,8 @@ const Navigation: React.FC = () => {
                 <Route path="/inventory" element={<InventoryScreen />} />
                 <Route path="/orders" element={<OrderScreen />} />
                 <Route path="/products" element={<ProductScreen />} />
-                <Route path="/" element={<Home />} />
+                <Route path="*" element={<Home />} />
                 <Route path="/track" element={<TrackingScreen />} />
-                <Route path="/login" element={<Login />} />
-                <Route path='/register' element={<Register />} />
-                <Route path='/confirm' element={<ConfirmEmail />} />
             </Routes>
         </Router>
     );
