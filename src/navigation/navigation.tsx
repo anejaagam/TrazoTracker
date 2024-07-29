@@ -8,10 +8,11 @@ import TrackingScreen from '../trackingScreen/TrackingScreen';
 import Login from '../Auth/login';
 import Register from '../Auth/register';
 import ConfirmEmail from '../Auth/confirmEmail';
+import Header from '../components/header';
 
 const Navigation: React.FC = () => {
     return (
-        <Router basename={process.env.PUBLIC_URL}>
+        <><Header /><Router basename={process.env.PUBLIC_URL}>
             <Routes>
                 <Route path="/inventory" element={<InventoryScreen />} />
                 <Route path="/orders" element={<OrderScreen />} />
@@ -19,7 +20,7 @@ const Navigation: React.FC = () => {
                 <Route path="*" element={<Home />} />
                 <Route path="/track" element={<TrackingScreen />} />
             </Routes>
-        </Router>
+        </Router></>
     );
 };
 

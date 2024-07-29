@@ -7,12 +7,61 @@ specifies that any unauthenticated user can "create", "read", "update",
 and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
-    .model({
-      content: a.string(),
-    })
-    .authorization((allow) => [allow.guest()]),
-});
+  Product: a.model({
+    id: a.id().required(),
+    name: a.string().required(),
+    packagingSizes: a.string().array().required(),
+    productPrices: a.hasMany('Prices', 'productId'), // updated relationship field
+    harvestedProducts: a.hasMany('HarvestedProduct', 'productId') // updated relationship field
+  }),
+  Prices: a.model({
+    id: a.id().required(), // added id field
+    productId: a.id().required(),
+    product: a.belongsTo('Product', 'productId'),
+    soldTo: a.enum(['FoodServices', 'Retail']),
+    packagingSize: a.string().required(),
+    price: a.float().required()
+  }),
+  Seed: a.model({
+    id: a.id().required(),
+    supplierName: a.string().required(),
+    type: a.string().required(),
+    variety: a.string().required(),
+    dateAcquired: a.date().required(),
+    quantityAcquired: a.integer().required(),
+    quantityLeft: a.integer().required(),
+    priceBoughtAt: a.float().required(),
+    inventoryId: a.id().required(), // added reference field
+    inventory: a.belongsTo('Inventory', 'inventoryId')
+  }),
+  HarvestedProduct: a.model({
+    id: a.id().required(), // added id field
+    productId: a.id().required(), // added reference field
+    product: a.belongsTo('Product', 'productId'),
+    quantityHarvested: a.integer().required(),
+    packaging: a.string().required(),
+    dateOfHarvest: a.date().required(),
+    inventoryId: a.id().required(), // added reference field
+    inventory: a.belongsTo('Inventory', 'inventoryId')
+  }),
+  MiscProduct: a.model({
+    id: a.id().required(), // added id field
+    type: a.string().required(),
+    quantity: a.integer().required(),
+    price: a.float().required(),
+    description: a.string().required(),
+    quantityLeft: a.integer().required(),
+    inventoryId: a.id().required(), // added reference field
+    inventory: a.belongsTo('Inventory', 'inventoryId')
+  }),
+  Inventory: a.model({
+    id: a.id().required(), // added id field
+    seeds: a.hasMany('Seed', 'inventoryId'), // added reference field
+    products: a.hasMany('HarvestedProduct', 'inventoryId'), // added reference field
+    misc: a.hasMany('MiscProduct', 'inventoryId') // added reference field
+  })
+})
+.authorization(allow => [allow.owner()]);
 
 export type Schema = ClientSchema<typeof schema>;
 

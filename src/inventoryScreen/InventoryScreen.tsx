@@ -11,7 +11,7 @@ const InventoryScreen: React.FC = () => {
     const [edit, setEdit] = React.useState(false);
     return (
         <><div className='h-screen flex flex-col gap-2'>
-            <Header />
+           
             {/* <div className="flex flex-row justify-start items-center px-10 text-white">
     
     </div> */}

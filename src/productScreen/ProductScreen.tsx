@@ -11,7 +11,7 @@ const ProductScreen: React.FC = () => {
     const [powders, setPowders] = React.useState(false);
     return (
         <div className='h-screen flex flex-col'>
-            <Header />
+      
             <div className="flex flex-row w-full p-5 gap-4 ">
                 <BackButton />
                 <div className="w-1/4 gap-4 flex">
