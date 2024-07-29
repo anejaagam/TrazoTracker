@@ -4,7 +4,7 @@ import './App.css';
 import Navigation from './navigation/navigation';
 import { Amplify } from 'aws-amplify';
 
-import outputs from '../amplify_outputs.json';
+import outputs from './amplify_outputs.json';
 import { Authenticator, useTheme, View, Image, Heading, useAuthenticator, Button , Theme, ThemeProvider} from '@aws-amplify/ui-react'; // Import the Image component
 import '@aws-amplify/ui-react/styles.css';
 
