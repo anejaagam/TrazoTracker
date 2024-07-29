@@ -5,8 +5,9 @@ import Navigation from './navigation/navigation';
 import { Amplify } from 'aws-amplify';
 
 import outputs from "./amplify_outputs.json";
-import { Authenticator, useTheme, View, Image, Heading, useAuthenticator, Button , Theme, ThemeProvider} from '@aws-amplify/ui-react'; // Import the Image component
+import { Authenticator, useTheme, View, Image, Heading, useAuthenticator, Button , Theme, ThemeProvider, CheckboxField, Input, Placeholder, Label, Message} from '@aws-amplify/ui-react'; // Import the Image component
 import '@aws-amplify/ui-react/styles.css';
+import { SignUp } from '@aws-amplify/ui-react/dist/types/components/Authenticator/SignUp';
 
 Amplify.configure(outputs);
 
@@ -64,12 +65,42 @@ function App() {
     SignIn: {
       
     },
+    SignUp: {
+      FormFields() {
+        const { validationErrors } = useAuthenticator();
+
+        return (
+          <>
+       
+            <Authenticator.SignUp.FormFields />
+            {Array.isArray(validationErrors) && validationErrors.length > 1 && (
+      <Message colorTheme='error' heading="Error">
+        {validationErrors.map((error, index) => (
+          <div key={index}>{error.message}</div>
+        ))}
+      </Message>
+    )}
+    {!Array.isArray(validationErrors) && validationErrors.message && (
+      <Message colorTheme='error' heading="Error">
+        <div>{validationErrors.message}</div>
+      </Message>
+    )}
+           
+
+            
+          </>
+        );
+      },
+    },
+   
+   
+
   
   }  
   const formFields = {
     signUp: {
       email: {
-        order:2
+        order: 2
       },
       password: {
         order: 3
@@ -82,10 +113,26 @@ function App() {
       }
     },
   }
+
+
   return (
    
 <ThemeProvider theme={Customtheme}>
-    <Authenticator formFields={formFields} components={components} >
+    <Authenticator formFields={formFields} components={components} services={
+     {
+      async validateCustomSignUp({ email }) {
+        const emailPattern = /[A-Za-z]+@infinitygreen\.ca/i;
+        if (!emailPattern.test(email)) {
+            throw new Error("Email must be from infinitygreen.ca");
+           
+            
+         
+        }
+      }
+     }
+
+     }
+     >
     <Navigation />
     </Authenticator>
     </ThemeProvider>
