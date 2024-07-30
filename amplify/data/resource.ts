@@ -13,7 +13,7 @@ const schema = a.schema({
     packagingSizes: a.string().array().required(),
     productPrices: a.hasMany('Prices', 'productId'), // updated relationship field
     harvestedProducts: a.hasMany('HarvestedProduct', 'productId') // updated relationship field
-  }),
+  }).identifier(['id']),
   Prices: a.model({
     id: a.id().required(), // added id field
     productId: a.id().required(),
@@ -21,7 +21,10 @@ const schema = a.schema({
     soldTo: a.enum(['FoodServices', 'Retail']),
     packagingSize: a.string().required(),
     price: a.float().required()
-  }),
+  }).secondaryIndexes((index) =>[
+    index("productId")
+    .sortKeys(["soldTo", "packagingSize"])
+  .queryField("productPricesByProductId")]),
   Seed: a.model({
     id: a.id().required(),
     supplierName: a.string().required(),
