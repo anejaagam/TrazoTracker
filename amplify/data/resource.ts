@@ -9,6 +9,7 @@ and "delete" any "Todo" records.
 const schema = a.schema({
   Product: a.model({
     id: a.id().required(),
+    type: a.string().required(),
     name: a.string().required(),
     packagingSizes: a.string().array().required(),
     productPrices: a.hasMany('Prices', 'productId'), // updated relationship field
@@ -18,7 +19,7 @@ const schema = a.schema({
     id: a.id().required(), // added id field
     productId: a.id().required(),
     product: a.belongsTo('Product', 'productId'),
-    soldTo: a.enum(['FoodServices', 'Retail']),
+    soldTo: a.enum(['FOODSERVICE', 'RETAIL']),
     packagingSize: a.string().required(),
     price: a.float().required()
   }).secondaryIndexes((index) =>[

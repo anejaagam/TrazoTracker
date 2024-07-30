@@ -1,6 +1,6 @@
 import React from 'react';
 import TextBox from '../components/textBox';
-
+import { Product, Price, sendPriceList, sendProduct } from '../utilities/productsbackend';
 interface AddProductProps {
     onClose: () => void;
 
@@ -14,31 +14,68 @@ const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
     const [productId, setProductId] = React.useState('');
     const [productPackages, setProductPackages] = React.useState<string[]>([]);
     const [productSoldTo, setProductSoldTo] = React.useState<string[]>([]);
+    const defaultFormClass = 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ';
 
     const handleProductSizing = (event: React.ChangeEvent<HTMLInputElement>) => {
+        
         const value = event.target.value;
         setProductPackages(prev =>
             prev.includes(value)
                 ? prev.filter(pkg => pkg !== value)
                 : [...prev, value]
         );
+       
     };
     const handleSoldToChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.id;
+        const value = event.target.value;
         setProductSoldTo(prev =>
             prev.includes(value)
                 ? prev.filter(pkg => pkg !== value)
                 : [...prev, value]
         );
+     
     };
 
-    const defaultFormClass = 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ';
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
 
-
         onClose();
+    };
+
+    const handleAddProduct = async (e:any) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const FormproductType = formData.get('productType');
+        const FormproductName = formData.get('productName');
+        const productId = `${productType === 'greens' ? 'IGPMG' : productType === 'mixes' ? 'IGPM' : 'IGPMP'}-${formData.get('productId')}`;
+        const productPackages = formData.getAll('productPackages');
+        const productSoldTo = formData.getAll('productSoldTo');
+        const prices: Price[] = productSoldTo.flatMap(soldTo =>
+            productPackages.map(pkg => ({
+                productId,
+                soldTo: soldTo as "FOODSERVICE" | "RETAIL",
+                packagingSize: pkg.toString(),
+                price: parseFloat(formData.get(`${soldTo}-${pkg}`)?.toString() ?? '') ?? 0
+            }))
+        );
+        const product: Product = {
+            type: FormproductType ? FormproductType.toString() : '',
+            name: FormproductName ? FormproductName.toString() : '',
+            id: productId,
+            packagingSizes: productPackages as string[],
+        };
+        try{
+            const {data, errors} = await sendProduct(product);
+            console.log(data, errors);
+        for (const price of prices) {
+            await sendPriceList(price);
+        }
+        await sendProduct(product);
+        await onClose();
+    }catch(e){
+        console.error(e);
+    }
     };
 
     return (
@@ -51,7 +88,7 @@ const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
 
 
 
-                <form onSubmit={handleSubmit} className='flex flex-col gap-4 p-5 h-full justify-between'>
+                <form onSubmit={handleAddProduct} className='flex flex-col gap-4 p-5 h-full justify-between' >
                     <label htmlFor="productType" className='flex flex-row gap-2 items-center justify-between'>Product Type
                         <select name="productType" onChange={(e) => {
                             setProductType(e.target.value);
@@ -62,7 +99,7 @@ const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
                         </select>
                     </label>
                     <label htmlFor="productName" className='flex flex-row items-center justify-between'>Product Name
-                        <input type="text" id="productName" name="productName" className={defaultFormClass + 'w-1/2'} />
+                        <input type="text" id="productName" name="productName" className={defaultFormClass + 'w-1/2'}/>
                     </label>
                     <label htmlFor="productId" className='flex flex-row items-center justify-between'>Product ID
                         <div className="w-1/2 flex justify-start">
@@ -93,8 +130,8 @@ const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
                     </label>
                     <label htmlFor='productSoldTo' className='flex flex-row items-center justify-between'>Sold To
                         <div className="flex justify-start w-1/2 gap-2">
-                            <label className='flex flex-row gap-2'> <input type='checkbox' id='productSoldToFood' name='productSoldTo' className='w-4' onChange={handleSoldToChange} />Food Services</label>
-                            <label className='flex flex-row gap-2'><input type='checkbox' id='productSoldToRetail' name='productSoldTo' className='w-4' onChange={handleSoldToChange} />Retail</label>
+                            <label className='flex flex-row gap-2'> <input type='checkbox' id='productSoldToFood' name='productSoldTo' className='w-4' onChange={handleSoldToChange} value="FOODSERVICE"/>Food Services</label>
+                            <label className='flex flex-row gap-2'><input type='checkbox' id='productSoldToRetail' name='productSoldTo' className='w-4' onChange={handleSoldToChange} value="RETAIL" />Retail</label>
                         </div>
                     </label>
 
@@ -102,14 +139,14 @@ const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
                         <div className="flex flex-col gap-4">
                             {productSoldTo.map(soldTo => (
                                 <div key={soldTo}>
-                                    <h3 className="text-lg font-semibold mb-2">{soldTo === 'productSoldToFood' ? 'Food Services Pricing' : 'Retail Pricing'}</h3>
+                                    <h3 className="text-lg font-semibold mb-2">{soldTo === 'FOODSERVICE' ? 'Food Services Pricing' : 'Retail Pricing'}</h3>
                                     <div className="grid grid-cols-2 gap-2">
                                         {productPackages.map(pkg => (
                                             <div key={pkg} className="flex flex-row gap-2 items-center justify-between">
                                                 <label htmlFor={`${soldTo}-${pkg}`} className=''>{
                                                     pkg === '50' ? '50g' : pkg === '453' ? '1lb' : pkg === '113' ? '16oz Container' : pkg === '227' ? '24oz Container' : pkg === '20' ? 'Sample Size' : '150g'
                                                 }</label>
-                                                <input type='number' id={`${soldTo}-${pkg}`} name={`${soldTo}-${pkg}`} className={defaultFormClass + 'w-1/2'} />
+                                                <input type='float' id={`${soldTo}-${pkg}`} name={`${soldTo}-${pkg}`} className={defaultFormClass + 'w-1/2'} />
                                             </div>
                                         ))}
                                     </div>
