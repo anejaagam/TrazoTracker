@@ -12,7 +12,7 @@ const Home: React.FC = () => {
     return (
         <div className='h-screen flex flex-col'>
         
-            <div className="flex justify-center items-center h-full">
+            <div className="flex justify-center items-center h-full ">
                 <div className="grid grid-cols-2 gap-4">
                     <Button onClick={() => { navigate('/products') }} img={products} text='Products' />
                     <Button onClick={() => { navigate('/inventory') }} img={inventory} text='Inventory' />

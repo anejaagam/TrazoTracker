@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from '../components/header';
 import BackButton from '../components/backButton';
 import AddForm from './AddForm';
 import ItemModal from './Item';
+import { useTrazoBackendContext } from '../utilities/trazoBackend';
 const InventoryScreen: React.FC = () => {
     const [seeds, setSeeds] = React.useState(true);
     const [products, setProducts] = React.useState(false);
     const [misc, setMisc] = React.useState(false);
     const [add, setAdd] = React.useState(false);
     const [edit, setEdit] = React.useState(false);
+    const {state, dispatch} = useTrazoBackendContext();
+    const {inventoryList, productList} = state;
+    useEffect(() => {
+    }, []);
     return (
         <><div className='h-screen flex flex-col gap-2'>
            
@@ -35,44 +40,26 @@ const InventoryScreen: React.FC = () => {
                             <th className="py-2">Lot Number</th>
                             <th className="py-2">Seed Type</th>
                             <th className="py-2">Supplier</th>
-                            <th className="py-2">Quantity</th>
+                            <th className="py-2">Quantity Acquired</th>
+                            <th className="py-2">Quantity Left</th>
+                            <th className="py-2">Price</th>
                             <th className="py-2">Date of Purchase</th>
                            
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className='' onClick={() => setEdit(true)}>
-                            <td className="border py-2" >123456</td>
-                            <td className="border py-2">Tomato</td>
-                            <td className="border py-2">Supplier 1</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">01/01/2021</td>
-                            
-                        </tr>
-                        <tr className=''>
-                            <td className="border py-2">123456</td>
-                            <td className="border py-2">Tomato</td>
-                            <td className="border py-2">Supplier 1</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">01/01/2021</td>
-                           
-                        </tr>
-                        <tr className=''>
-                            <td className="border py-2">123456</td>
-                            <td className="border py-2">Tomato</td>
-                            <td className="border py-2">Supplier 1</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">01/01/2021</td>
-                            
-                        </tr>
-                        <tr className=''>
-                            <td className="border py-2">123456</td>
-                            <td className="border py-2">Tomato</td>
-                            <td className="border py-2">Supplier 1</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">01/01/2021</td>
-                           
-                        </tr>
+                        {inventoryList.seeds.map((seed, index) => (
+                            <tr key={index} className=''>
+                                <td className="border py-2" >{seed.id}</td>
+                                <td className="border py-2">{seed.variety}</td>
+                                <td className="border py-2">{seed.supplierName}</td>
+                                <td className="border py-2">{seed.quantityAcquired}</td>
+                                <td className="border py-2">{seed.quantityLeft}</td>
+                                <td className="border py-2">{seed.priceBoughtAt}</td>
+                                <td className="border py-2">{seed.dateAcquired}</td>
+
+                            </tr>
+                        ))}
                     </tbody>
                 </table>}
 
@@ -83,38 +70,20 @@ const InventoryScreen: React.FC = () => {
                             <th className="py-2">Package Size</th>
                             <th className="py-2">Harvested Date</th>
                             <th className="py-2">Quantity</th>
-                            <th className="py-2">Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className='' onClick={() => setEdit(true)}>
-                            <td className="border py-2"  onClick={() => setEdit(true)}>Tomato</td>
-                            <td className='border py-2'>1kg</td>
-                            <td className="border py-2">123456</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">Available</td>
-                        </tr>
-                        <tr className=''>
-                            <td className="border py-2">Tomato</td>
-                            <td className='border py-2'>1kg</td>
-                            <td className="border py-2">123456</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">Available</td>
-                        </tr>
-                        <tr className=''>
-                            <td className="border py-2">Tomato</td>
-                            <td className='border py-2'>1kg</td>
-                            <td className="border py-2">123456</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">Available</td>
-                        </tr>
-                        <tr className=''>
-                            <td className="border py-2">Tomato</td>
-                            <td className='border py-2'>1kg</td>
-                            <td className="border py-2">123456</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">Available</td>
-                        </tr>
+                    {inventoryList.harvestedProducts.map((harvest, index) => (
+                            <tr key={index} className=''>
+                                <td className="border py-2" >{productList.find((product) => 
+                                    product.id === harvest.productId)?.name}</td>
+                                <td className="border py-2">{harvest.packaging}</td>
+                                <td className="border py-2">{harvest.dateOfHarvest}</td>
+                                <td className="border py-2">{harvest.quantityHarvested}</td>
+                             
+
+                            </tr>
+                        ))}
 
                     </tbody>
                 </table>}
@@ -129,34 +98,15 @@ const InventoryScreen: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className='' onClick={() => setEdit(true)}>
-                            <td className="border py-2"  onClick={() => setEdit(true)}>Fertilizer</td>
-                            <td className="border py-2">Supplier 1</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">01/01/2021</td>
-                            <td className="border py-2">01/01/2022</td>
-                        </tr>
-                        <tr className=''>
-                            <td className="border py-2">Fertilizer</td>
-                            <td className="border py-2">Supplier 1</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">01/01/2021</td>
-                            <td className="border py-2">01/01/2022</td>
-                        </tr>
-                        <tr className=''>
-                            <td className="border py-2">Fertilizer</td>
-                            <td className="border py-2">Supplier 1</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">01/01/2021</td>
-                            <td className="border py-2">01/01/2022</td>
-                        </tr>
-                        <tr className=''>
-                            <td className="border py-2">Fertilizer</td>
-                            <td className="border py-2">Supplier 1</td>
-                            <td className="border py-2">100</td>
-                            <td className="border py-2">01/01/2021</td>
-                            <td className="border py-2">01/01/2022</td>
-                        </tr>
+                        {inventoryList.miscProducts.map((misc, index) => (
+                            <tr key={index} className=''>
+                                <td className="border py-2" >{misc.type}</td>
+                                <td className="border py-2">{misc.price}</td>
+                                <td className="border py-2">{misc.quantity}</td>
+                                <td className="border py-2">{misc.dateAcquired}</td>
+                                <td className="border py-2">{misc.description}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>}
             </div>

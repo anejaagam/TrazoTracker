@@ -29,7 +29,6 @@ const schema = a.schema({
   Seed: a.model({
     id: a.id().required(),
     supplierName: a.string().required(),
-    type: a.string().required(),
     variety: a.string().required(),
     dateAcquired: a.date().required(),
     quantityAcquired: a.integer().required(),
@@ -37,7 +36,7 @@ const schema = a.schema({
     priceBoughtAt: a.float().required(),
     inventoryId: a.id().required(), // added reference field
     inventory: a.belongsTo('Inventory', 'inventoryId')
-  }),
+  }).identifier(['id']),
   HarvestedProduct: a.model({
     id: a.id().required(), // added id field
     productId: a.id().required(), // added reference field
@@ -50,11 +49,12 @@ const schema = a.schema({
   }),
   MiscProduct: a.model({
     id: a.id().required(), // added id field
-    type: a.string().required(),
+    type: a.enum(['FERTILIZER', 'SOIL', 'GROWINGMATERIAL','PACKINGMATERIAL']),
     quantity: a.integer().required(),
     price: a.float().required(),
     description: a.string().required(),
     quantityLeft: a.integer().required(),
+    dateAcquired: a.date().required(),
     inventoryId: a.id().required(), // added reference field
     inventory: a.belongsTo('Inventory', 'inventoryId')
   }),

@@ -41,8 +41,7 @@ export interface Product {
     id: string;
     type: string;
     name: string;
-    packagingSizes: string[];
-    
+    packagingSizes: (string | null)[];
 }
 export interface Price {
     productId: string;
@@ -141,7 +140,7 @@ export const getPricesforProduct = async (productId: string) => {
     }
 }
 
-export const getFullProductList = async () => {
+export const getFullProductPriceList = async () => {
 
         try {
             const { data, errors } = await client.models.Product.list();
@@ -182,4 +181,19 @@ export const getFullProductList = async () => {
     catch (error) {
         console.error(error);
     }
+}
+
+export const getAllProducts = async () => {
+    const { data, errors } = await client.models.Product.list();
+    if (errors) {
+        console.error(errors);
+        return [];
+    }
+    const products: Product[] = (data || []).map((product: Product) => ({
+      id: product.id,
+      type: product.type,
+      name: product.name,
+      packagingSizes: product.packagingSizes
+    }));
+    return products;
 }

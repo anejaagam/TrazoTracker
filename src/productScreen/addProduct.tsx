@@ -10,8 +10,6 @@ interface AddProductProps {
 
 const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
     const [productType, setProductType] = React.useState('greens');
-    const [productName, setProductName] = React.useState('');
-    const [productId, setProductId] = React.useState('');
     const [productPackages, setProductPackages] = React.useState<string[]>([]);
     const [productSoldTo, setProductSoldTo] = React.useState<string[]>([]);
     const defaultFormClass = 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ';
@@ -48,7 +46,7 @@ const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
         const formData = new FormData(e.target);
         const FormproductType = formData.get('productType');
         const FormproductName = formData.get('productName');
-        const productId = `${productType === 'greens' ? 'IGPMG' : productType === 'mixes' ? 'IGPM' : 'IGPMP'}-${formData.get('productId')}`;
+        const productId = `${productType === 'greens' ? 'IGPMG' : productType === 'mixes' ? 'IGPMX' : 'IGPMP'}-${formData.get('productId')}`;
         const productPackages = formData.getAll('productPackages');
         const productSoldTo = formData.getAll('productSoldTo');
         const prices: Price[] = productSoldTo.flatMap(soldTo =>
@@ -103,7 +101,7 @@ const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
                     </label>
                     <label htmlFor="productId" className='flex flex-row items-center justify-between'>Product ID
                         <div className="w-1/2 flex justify-start">
-                            <label htmlFor="productId" className={defaultFormClass + 'w-full'}>{productType === 'greens' ? 'IGPMG' : productType === 'mixes' ? 'IGPM' : 'IGPMP'}-<input type="text" id="productId" name="productId" className='bg-gray-50 w-max text-gray-900 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white ' /></label>
+                            <label htmlFor="productId" className={defaultFormClass + 'w-full'}>{productType === 'greens' ? 'IGPMG' : productType === 'mixes' ? 'IGPMX' : 'IGPMP'}-<input type="text" id="productId" name="productId" className='bg-gray-50 w-max text-gray-900 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white ' /></label>
                         </div>
                     </label>
                     <label htmlFor="productType" className='flex flex-row justify-between items-center'>Product Packages
@@ -124,7 +122,7 @@ const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
                                 <input type="checkbox" id="productPackages20" name="productPackages" className="w-4" value="20" onChange={handleProductSizing} />Sample Size
                             </label>
                             <label className="flex flex-row gap-2">
-                                <input type="checkbox" id="productPackages150" name="productPackages" className="w-4" value="100" onChange={handleProductSizing} />150g Powder
+                                <input type="checkbox" id="productPackages150" name="productPackages" className="w-4" value="150" onChange={handleProductSizing} />150g Powder
                             </label>
                         </div>
                     </label>

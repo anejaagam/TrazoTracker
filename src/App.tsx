@@ -8,6 +8,7 @@ import outputs from "./amplify_outputs.json";
 import { Authenticator, useTheme, View, Image, Heading, useAuthenticator, Button , Theme, ThemeProvider, CheckboxField, Input, Placeholder, Label, Message} from '@aws-amplify/ui-react'; // Import the Image component
 import '@aws-amplify/ui-react/styles.css';
 import { SignUp } from '@aws-amplify/ui-react/dist/types/components/Authenticator/SignUp';
+import { TrazoBackendProvider } from './utilities/trazoBackend';
 
 Amplify.configure(outputs);
 
@@ -133,7 +134,9 @@ function App() {
 
      }
      >
+      <TrazoBackendProvider>
     <Navigation />
+    </TrazoBackendProvider>
     </Authenticator>
     </ThemeProvider>
     

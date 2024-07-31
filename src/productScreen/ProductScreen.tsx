@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-import Header from '../components/header';
 import BackButton from '../components/backButton';
 import AddProduct from './addProduct';
-import { getFullProductList, getPricesforProduct, ProductList, ProductListPowder } from '../utilities/productsbackend';
+import { getAllProducts, getFullProductPriceList } from '../utilities/productsbackend';
 
 const ProductScreen: React.FC = () => {
     const [add, setAdd] = React.useState(false);
-    const [edit, setEdit] = React.useState(false);
+    //const [edit, setEdit] = React.useState(false);
     const [greens, setGreens] = React.useState(true);
     const [mixes, setMixes] = React.useState(false);
     const [powders, setPowders] = React.useState(false);
@@ -14,7 +13,8 @@ const ProductScreen: React.FC = () => {
     const packSizes = ["20", "50", "113", "227", "453"] as const;
     const packSizesPowder = ["50", "150", "20"] as const;
     const fetchProductList = async () => {
-        const products = await getFullProductList();
+        const products = await getFullProductPriceList();
+       
         if (products) {
             const sortedProducts = products.sort((a, b) => {
                 const idA = parseInt(a.id.split('-')[1]);
@@ -23,6 +23,7 @@ const ProductScreen: React.FC = () => {
             });
             setProductList(sortedProducts);
         }
+     
     };
     useEffect(() => {
         
