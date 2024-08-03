@@ -11,7 +11,7 @@ const OrderScreen: React.FC = () => {
 
     return (
         <div className='h-screen flex flex-col'>
-            <Header />
+          
             <div className="flex justify-center items-start p-4">
                 <div className="grid grid-cols-4 gap-4">
                 <Button onClick={() => {navigate('/orders')}} img={plus} text='New'/>

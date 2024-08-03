@@ -2,8 +2,10 @@ import React, { useEffect } from 'react';
 import BackButton from '../components/backButton';
 import AddProduct from './addProduct';
 import { getAllProducts, getFullProductPriceList } from '../utilities/productsbackend';
+import { useTrazoBackendContext } from '../utilities/trazoBackend';
 
 const ProductScreen: React.FC = () => {
+    const { dispatch } = useTrazoBackendContext();
     const [add, setAdd] = React.useState(false);
     //const [edit, setEdit] = React.useState(false);
     const [greens, setGreens] = React.useState(true);

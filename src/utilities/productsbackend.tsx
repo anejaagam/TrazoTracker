@@ -1,12 +1,13 @@
 import type {Schema} from '../../amplify/data/resource'
 import { generateClient } from 'aws-amplify/data'
+import {Action, useTrazoBackendContext} from './trazoBackend'
 
 const client = generateClient<Schema>({authMode: 'userPool'});
+
 const packSizes = ["50", "453", "113", "227", "20","150"] as const;
 const packSizesPowder = ["50", "150", "20"] as const;
 const soldToEnum = ["FOODSERVICE", "RETAIL"] as const;
 const powderSoldToEnum = ["RETAIL"] as const;
-
 type PackSize = typeof packSizes[number];
 type PackSizePowder = typeof packSizesPowder[number];
 type SoldTo = typeof soldToEnum[number];
@@ -175,7 +176,7 @@ export const getFullProductPriceList = async () => {
                 } as ProductList;
               }
             }));
-
+           
         return productList;
     }
     catch (error) {

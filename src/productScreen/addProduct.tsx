@@ -1,6 +1,7 @@
 import React from 'react';
 import TextBox from '../components/textBox';
 import { Product, Price, sendPriceList, sendProduct } from '../utilities/productsbackend';
+
 interface AddProductProps {
     onClose: () => void;
 
@@ -70,6 +71,7 @@ const AddProduct: React.FC<AddProductProps> = ({ onClose }) => {
             await sendPriceList(price);
         }
         await sendProduct(product);
+        window.location.reload();
         await onClose();
     }catch(e){
         console.error(e);

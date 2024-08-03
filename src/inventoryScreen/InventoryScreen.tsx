@@ -10,10 +10,16 @@ const InventoryScreen: React.FC = () => {
     const [misc, setMisc] = React.useState(false);
     const [add, setAdd] = React.useState(false);
     const [edit, setEdit] = React.useState(false);
+    const [item, setItem] = React.useState<any>(null);
     const {state, dispatch} = useTrazoBackendContext();
-    const {inventoryList, productList} = state;
+   
+    const [inventoryList, setInventoryList] = React.useState<any>({seeds: [], harvestedProducts: [], miscProducts: []});
+    const [productList, setProductList] = React.useState<any>([]);
     useEffect(() => {
-    }, []);
+        const {inventoryList, productList} = state;
+        setInventoryList(inventoryList);
+        setProductList(productList);
+    }, [state]);
     return (
         <><div className='h-screen flex flex-col gap-2'>
            
@@ -48,8 +54,8 @@ const InventoryScreen: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {inventoryList.seeds.map((seed, index) => (
-                            <tr key={index} className=''>
+                        {inventoryList.seeds.map((seed: { id: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; variety: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; supplierName: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; quantityAcquired: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; quantityLeft: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; priceBoughtAt: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; dateAcquired: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }, index: React.Key | null | undefined) => (
+                            <tr key={index} onClick={()=>{setEdit(true); setItem(seed)}} className=''>
                                 <td className="border py-2" >{seed.id}</td>
                                 <td className="border py-2">{seed.variety}</td>
                                 <td className="border py-2">{seed.supplierName}</td>
@@ -70,16 +76,18 @@ const InventoryScreen: React.FC = () => {
                             <th className="py-2">Package Size</th>
                             <th className="py-2">Harvested Date</th>
                             <th className="py-2">Quantity</th>
+                            <th className="py-2">Quantity Left</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {inventoryList.harvestedProducts.map((harvest, index) => (
-                            <tr key={index} className=''>
-                                <td className="border py-2" >{productList.find((product) => 
+                    {inventoryList.harvestedProducts.map((harvest: { productId: any; packaging: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; dateOfHarvest: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; quantityHarvested: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; quantityLeft: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }, index: React.Key | null | undefined) => (
+                            <tr key={index} onClick={()=>{setEdit(true); setItem(harvest)}} className=''>
+                                <td className="border py-2" >{productList.find((product: { id: any; }) => 
                                     product.id === harvest.productId)?.name}</td>
                                 <td className="border py-2">{harvest.packaging}</td>
                                 <td className="border py-2">{harvest.dateOfHarvest}</td>
                                 <td className="border py-2">{harvest.quantityHarvested}</td>
+                                <td className="border py-2">{harvest.quantityLeft}</td>
                              
 
                             </tr>
@@ -92,26 +100,30 @@ const InventoryScreen: React.FC = () => {
                         <tr>
                             <th className="py-2">Type</th>
                             <th className="py-2">Supplier</th>
+                            <th className="py-2">Price</th>
                             <th className="py-2">Quantity</th>
                             <th className="py-2">Date of Purchase</th>
                             <th className="py-2">Description</th>
+                            <th className="py-2">Quantity Left</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {inventoryList.miscProducts.map((misc, index) => (
-                            <tr key={index} className=''>
+                        {inventoryList.miscProducts.map((misc: { type: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; supplierName: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; price: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; quantity: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; dateAcquired: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; description: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; quantityLeft: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; },  index: React.Key | null | undefined) => (
+                            <tr key={index} onClick={()=>{setEdit(true); setItem(misc)}} className=''>
                                 <td className="border py-2" >{misc.type}</td>
+                                <td className="border py-2">{misc.supplierName}</td>
                                 <td className="border py-2">{misc.price}</td>
                                 <td className="border py-2">{misc.quantity}</td>
                                 <td className="border py-2">{misc.dateAcquired}</td>
                                 <td className="border py-2">{misc.description}</td>
+                                <td className="border py-2">{misc.quantityLeft}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>}
             </div>
             {add && <AddForm onClose={() => setAdd(false)} />}
-            {edit && <ItemModal onClose={() => setEdit(false)} seeds={seeds} products={products} misc={misc}/>}
+            {edit && <ItemModal onClose={() => setEdit(false)} seeds={seeds} products={products} misc={misc} ProductItem={item} SeedItem={item} MiscItem={item}/>}
         </div><> </></>
     );
 };

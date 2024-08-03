@@ -39,6 +39,7 @@ const AddForm: React.FC<AddFormProps> = ({onClose}) => {
         const HarvestProduct : InventoryBackend.HarvestedProduct = {
             productId: selectedProductId,
             quantityHarvested: formData.get('productQuantity') as unknown as number,
+            quantityLeft: formData.get('productQuantity') as unknown as number,
             packaging: formData.get('packageSize') as string,
             dateOfHarvest: formData.get('dateOfHarvest') as string,
             inventoryId: 'IGPINV'
@@ -52,8 +53,9 @@ const AddForm: React.FC<AddFormProps> = ({onClose}) => {
             price: parseFloat(formData.get('price') as string),
             description: formData.get('miscDescription') as string,
             quantityLeft: parseInt(formData.get('miscQuantity') as string),
-            dateAcquired: formData.get('dateOfAcquisition') as string,
-            inventoryId: 'IGPINV'
+            dateAcquired: formData.get('miscDate') as string,
+            inventoryId: 'IGPINV',
+            supplierName: formData.get('miscSupplier') as string
         };
         InventoryBackend.addMiscProduct(dispatch, MiscProduct);
         break;

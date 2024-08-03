@@ -5,9 +5,11 @@ import {Action} from './trazoBackend'
 const client = generateClient<Schema>({authMode: 'userPool'});
 
 export interface HarvestedProduct {
+    id?: string;
     productId: string;
     quantityHarvested: number;
     packaging: string;
+    quantityLeft: number;
     dateOfHarvest: string;
     inventoryId: string;
 }
@@ -24,6 +26,7 @@ export interface Seed{
 }
 
 export interface MiscProduct{
+    id?: string;
     type: 'FERTILIZER' | 'SOIL' | 'GROWINGMATERIAL' | 'PACKINGMATERIAL'| null | undefined;
     quantity: number;
     price: number;
@@ -31,6 +34,7 @@ export interface MiscProduct{
     quantityLeft: number;
     inventoryId: string;
     dateAcquired: string;
+    supplierName: string;
 }
 
 export interface Inventory{
@@ -73,6 +77,7 @@ export const sendHarvestedProduct = async (product: HarvestedProduct) => {
     await client.models.HarvestedProduct.create(
         product
     );
+    console.log(data, errors);
      return {data, errors};
 
 }
@@ -82,6 +87,7 @@ export const sendMiscProduct = async (product: MiscProduct) => {
     await client.models.MiscProduct.create(
         product
     );
+    console.log(data, errors);
      return {data, errors};
 
 }
@@ -100,6 +106,71 @@ export const getInventoryList = async () => {
     return  inventoryList;
     
 }
+
+
+export const UpdateItem = async (dispatch: React.Dispatch<Action>,id: string, type: string, seed?: Seed, product?:HarvestedProduct, mic?:MiscProduct) => {
+    if (type === 'SEED') {
+        const {data, errors} =
+        await client.models.Seed.update(
+            {id: id, 
+                quantityLeft: seed?.quantityLeft,
+                priceBoughtAt: seed?.priceBoughtAt,
+                dateAcquired: seed?.dateAcquired,
+                supplierName: seed?.supplierName,
+                variety: seed?.variety,
+                quantityAcquired: seed?.quantityAcquired
+            }
+        );
+        console.log(data, errors);
+         return {data, errors};
+    } else if (type === 'HARVESTEDPRODUCT') {
+        const {data, errors} =
+        await client.models.HarvestedProduct.update(
+            {id: id,
+                quantityHarvested: product?.quantityHarvested,
+                packaging: product?.packaging,
+                dateOfHarvest: product?.dateOfHarvest,
+                quantityLeft: product?.quantityLeft,
+            }
+        );
+        console.log(data, errors);
+         return {data, errors};
+    }else if (type === 'MISCPRODUCT') {
+        const {data, errors} =
+        await client.models.MiscProduct.update(
+            {id: id, 
+                type: mic?.type,
+                quantity: mic?.quantity,
+                price: mic?.price,
+                description: mic?.description,
+                quantityLeft: mic?.quantityLeft,
+                dateAcquired: mic?.dateAcquired,
+                supplierName: mic?.supplierName,}
+        );
+         return {data, errors};
+    }
+    const inventoryId = await getInventoryid();
+    const inventory = await getInventoryList(); // Define this function to fetch inventory
+    dispatch({ type: 'SET_INVENTORY_LIST', payload: inventory || {seeds: [], harvestedProducts: [], miscProducts: []} });
+    dispatch({ type: 'SET_INVENTORIES_LOADED', payload: true });
+    dispatch({ type: 'SET_INVENTORY_ID', payload: inventoryId || 'IGPINV' });
+    
+}
+
+export const DeleteItem = async (dispatch: React.Dispatch<Action>, id: string, type: string) => {
+    if (type === 'SEED') {
+        await client.models.Seed.delete({id: id});
+    } else if (type === 'HARVESTEDPRODUCT') {
+        await client.models.HarvestedProduct.delete({id: id});
+    }else if (type === 'MISCPRODUCT') {
+        await client.models.MiscProduct.delete({id: id});
+    }
+    const inventoryId = await getInventoryid();
+    const inventory = await getInventoryList(); // Define this function to fetch inventory
+    dispatch({ type: 'SET_INVENTORY_LIST', payload: inventory || {seeds: [], harvestedProducts: [], miscProducts: []} });
+    dispatch({ type: 'SET_INVENTORIES_LOADED', payload: true });
+    dispatch({ type: 'SET_INVENTORY_ID', payload: inventoryId || 'IGPINV' });
+  }
 
 export const addSeed = async (dispatch: React.Dispatch<Action>, seed: Seed) => {
     await sendSeed(seed);

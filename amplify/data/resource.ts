@@ -43,6 +43,7 @@ const schema = a.schema({
     productId: a.id().required(), // added reference field
     product: a.belongsTo('Product', 'productId'),
     quantityHarvested: a.integer().required(),
+    quantityLeft: a.integer().required(),
     packaging: a.string().required(),
     dateOfHarvest: a.date().required(),
     inventoryId: a.id().required(), // added reference field
@@ -57,7 +58,8 @@ const schema = a.schema({
     quantityLeft: a.integer().required(),
     dateAcquired: a.date().required(),
     inventoryId: a.id().required(), // added reference field
-    inventory: a.belongsTo('Inventory', 'inventoryId')
+    inventory: a.belongsTo('Inventory', 'inventoryId'),
+    supplierName: a.string().required()
   }),
   Inventory: a.model({
     id: a.id().required(), // added id field

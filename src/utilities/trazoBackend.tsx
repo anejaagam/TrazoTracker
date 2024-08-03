@@ -70,6 +70,7 @@ export const TrazoBackendProvider: React.FC<{ children: ReactNode }> = ({ childr
     fetchInventoryId();
     const fetchInventoryList = async () => {
       const inventory = await getInventoryList(); // Define this function to fetch inventory
+      console.log(inventory);
       dispatch({ type: 'SET_INVENTORY_LIST', payload: inventory || {seeds: [], harvestedProducts: [], miscProducts: []} });
       dispatch({ type: 'SET_INVENTORIES_LOADED', payload: true });
     };
