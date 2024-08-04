@@ -198,3 +198,18 @@ export const getAllProducts = async () => {
     }));
     return products;
 }
+
+export const getPrice = async (productId: string, soldTo: "FOODSERVICE" | "RETAIL" | null | undefined, packagingSize: string) : Promise<string>   =>  {
+    const{data, errors} = await client.models.Prices.productPricesByProductId(
+      {productId, 
+      }
+      
+    )
+    for (const price of data) {
+      if (price.soldTo === soldTo && price.packagingSize === packagingSize) {
+        return price.price as unknown as string;
+      }
+    }
+  
+    return "0";
+  }

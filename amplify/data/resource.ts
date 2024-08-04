@@ -14,7 +14,8 @@ const schema = a.schema({
     name: a.string().required(),
     packagingSizes: a.string().array().required(),
     productPrices: a.hasMany('Prices', 'productId'), // updated relationship field
-    harvestedProducts: a.hasMany('HarvestedProduct', 'productId') // updated relationship field
+    harvestedProducts: a.hasMany('HarvestedProduct', 'productId'), // updated relationship field
+    orders: a.hasMany('Order', 'productId') // updated relationship field
   }).identifier(['id']),
   Prices: a.model({
     id: a.id().required(), // added id field
@@ -25,8 +26,7 @@ const schema = a.schema({
     price: a.float().required()
   }).secondaryIndexes((index) =>[
     index("productId")
-    .sortKeys(["soldTo", "packagingSize"])
-  .queryField("productPricesByProductId")]),
+    .sortKeys(["soldTo", "packagingSize"]).queryField("productPricesByProductId").name("pricesByProductIdAndSoldToAndPackagingSize")]),
   Seed: a.model({
     id: a.id().required(),
     supplierName: a.string().required(),
@@ -66,8 +66,60 @@ const schema = a.schema({
     seeds: a.hasMany('Seed', 'inventoryId'), // added reference field
     products: a.hasMany('HarvestedProduct', 'inventoryId'), // added reference field
     misc: a.hasMany('MiscProduct', 'inventoryId') // added reference field
+  }),
+  Customer: a.model({
+    id: a.id().required(),
+    brand: a.string().required(),
+    locationName: a.string().required(),
+    contactName: a.string().required(),
+    contactNumber: a.string().required(),
+    contactEmail: a.string().required(),
+    deliveryMethods: a.string().array(),
+    deliveryAddress: a.string().required(),
+    customerType: a.enum(['FOODSERVICE', 'RETAIL']),
+    notes: a.string().required(),
+    orders: a.hasMany('Order', 'customerId'), // added reference field
+    delivery: a.hasMany('Delivery', 'customerId') // added reference field
+  }).identifier(['id']),
+  Order: a.model({
+    id: a.id().required(), // added id field
+    customerId: a.id().required(), // added reference field
+    customer: a.belongsTo('Customer', 'customerId'),
+    productId: a.id().required(), // added reference field
+    product: a.belongsTo('Product', 'productId'),
+    quantity: a.integer(),
+    price: a.float(),
+    packagingSize: a.string().required(),
+    status: a.enum(['PRE', 'GROWING','HARVESTED', 'DELIVERED']),
+    orderDate: a.date().required(),
+    deliveryDate: a.date().required(),
+    deliverMethod: a.enum(['DIRECT', 'GFS', 'OTHER']),
+    notes: a.string()
+  }).identifier(['id']).secondaryIndexes((index) =>[
+    index("customerId")
+    .queryField("ordersByCustomerId"),
+    index("deliveryDate")
+    .queryField("ordersByDeliveryDate")
+  ]),
+  Delivery: a.model({
+    id: a.id().required(), // added id field
+    orders: a.id().array(), // added reference field
+    deliveryDate: a.date().required(),
+    deliveryMethod: a.enum(['DIRECT', 'GFS', 'OTHER']),
+    customerId: a.id().required(), // added reference field
+    customer: a.belongsTo('Customer', 'customerId'),
+    notes: a.string(),
+  }).identifier(['id']).secondaryIndexes((index) =>[
+    index("customerId")
+    .sortKeys(["deliveryDate"])
+    .queryField("deliveryByCustomerId"),
+    index("deliveryDate")
+    .queryField("deliveryByDeliveryDate"),
+    index("customerId")
+    .queryField("deliveryByCustomer")
+
+  ]),
   })
-})
 .authorization(allow => [allow.owner()]);
 
 export type Schema = ClientSchema<typeof schema>;

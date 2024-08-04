@@ -4,6 +4,11 @@
   "private": true,
   "dependencies": {
     "@aws-amplify/ui-react": "^6.1.14",
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -12,6 +17,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "aws-amplify": "^6.4.3",
+    "fullcalendar": "^6.1.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router": "^6.24.1",
@@ -46,6 +52,7 @@
   "devDependencies": {
     "@aws-amplify/backend": "^1.0.4",
     "@aws-amplify/backend-cli": "^1.2.1",
+    "@types/react-big-calendar": "^1.8.9",
     "autoprefixer": "^10.4.19",
     "aws-cdk": "^2.150.0",
     "aws-cdk-lib": "^2.150.0",

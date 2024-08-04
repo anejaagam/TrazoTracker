@@ -17,7 +17,7 @@ const Home: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4">
                     <Button onClick={() => { navigate('/products') }} img={products} text='Products' />
                     <Button onClick={() => { navigate('/inventory') }} img={inventory} text='Inventory' />
-                    <Button onClick={() => { navigate('/orders') }} img={orders} text='Orders' disabled={true} />
+                    <Button onClick={() => { navigate('/orders') }} img={orders} text='Orders' />
                     <Button onClick={() => { navigate('/track') }} img={tracking} text='Tray Track' disabled={true} />
                 </div>
             </div>
