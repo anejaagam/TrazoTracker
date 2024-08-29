@@ -56,7 +56,7 @@ const AddScreen: React.FC<AddFormProps> = ({ onClose }) => {
                     deliveryMethods: formData.getAll('deliverMethods') as string[],
                     notes: formData.get('notes') as string,
                 }
-                const data = createCustomer(customer);
+                const data = createCustomer(dispatch,customer);
                 console.log(data);
             }
         if (order) {
@@ -73,7 +73,7 @@ const AddScreen: React.FC<AddFormProps> = ({ onClose }) => {
                     notes: formData.get('notes') as string,
                 }
                 console.log(orderData);
-                const data1 = createOrder(orderData);
+                const data1 = createOrder(dispatch,orderData);
                 console.log(data1);
             }
 

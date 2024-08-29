@@ -1,7 +1,7 @@
 import React, { createContext, useReducer, useContext, useEffect, ReactNode } from 'react';
 import { getAllProducts, Product } from './productsbackend';
 import { getInventoryid, getInventoryList, Inventory } from './inventoryBackend';
-import { Customer, getCustomerList, getOrderList, Order } from './ordersBackend';
+import { Customer, Delivery, getCustomerList, getDeliveries, getOrderList, Order } from './ordersBackend';
 
 // Define types for state and actions
 type State = {
@@ -14,6 +14,8 @@ type State = {
   customerList: (Customer)[];
   ordersLoaded: boolean;
   orderList: (Order)[];
+  deliveriesLoaded: boolean;
+  deliveryList: (Delivery)[];
   
 };
 
@@ -27,6 +29,8 @@ export type Action =
   | { type: 'SET_CUSTOMER_LIST'; payload: (Customer)[] }
   | { type: 'SET_ORDERS_LOADED'; payload: boolean }
   | { type: 'SET_ORDER_LIST'; payload: (Order)[] }
+  | { type: 'SET_DELIVERIES_LOADED'; payload: boolean }
+  | { type: 'SET_DELIVERY_LIST'; payload: (Delivery)[] };
 
 const initialState: State = {
   productList: [],
@@ -38,6 +42,8 @@ const initialState: State = {
   customerList: [],
   ordersLoaded: false,
   orderList: [],
+  deliveriesLoaded: false,
+  deliveryList: [],
 };
 
 const TrazoBackendContext = createContext<{ state: State; dispatch: React.Dispatch<Action> }>({
@@ -65,6 +71,10 @@ const trazoBackendReducer = (state: State, action: Action): State => {
       return { ...state, ordersLoaded: action.payload };
       case 'SET_ORDER_LIST':
       return { ...state, orderList: action.payload };
+      case 'SET_DELIVERIES_LOADED':
+      return { ...state, deliveriesLoaded: action.payload };
+      case 'SET_DELIVERY_LIST':
+      return { ...state, deliveryList: action.payload };
     default:
       return state;
   }
@@ -99,6 +109,7 @@ export const TrazoBackendProvider: React.FC<{ children: ReactNode }> = ({ childr
     fetchInventoryList();
   }, []);
   useEffect(() => {
+    if (!state.customersLoaded || !state.ordersLoaded || !state.deliveriesLoaded) {
     const fetchOrderScreen = async () => {
       const customers = await getCustomerList();
       dispatch({ type: 'SET_CUSTOMER_LIST', payload: customers || [] });
@@ -106,9 +117,14 @@ export const TrazoBackendProvider: React.FC<{ children: ReactNode }> = ({ childr
       const orders = await getOrderList();
       dispatch({ type: 'SET_ORDER_LIST', payload: orders });
       dispatch({ type: 'SET_ORDERS_LOADED', payload: true });
+      const deliveries = await getDeliveries();
+     
+      dispatch({ type: 'SET_DELIVERY_LIST', payload: deliveries });
+      dispatch({ type: 'SET_DELIVERIES_LOADED', payload: true });
     };
     fetchOrderScreen();
-  }, [state.customersLoaded, state.ordersLoaded]);
+  }
+  }, [state.customersLoaded, state.ordersLoaded, state.deliveriesLoaded]);
   return (
     <TrazoBackendContext.Provider value={{ state, dispatch }}>
       {children}

@@ -10,6 +10,7 @@ import { a } from '@aws-amplify/backend';
 import AddScreen from './AddScreen';
 import { getDeliveries } from '../utilities/ordersBackend';
 import { useTrazoBackendContext } from '../utilities/trazoBackend';
+import EventModal from './EventModal';
 const customer: string = require('../assets/icons/user.svg').default;
 const clipboard: string = require('../assets/icons/clipboard.svg').default;
 const calendar: string = require('../assets/icons/calender.svg').default;
@@ -45,19 +46,26 @@ const OrderScreen: React.FC = () => {
     const [add, setAdd] = React.useState(false);
     const [events, setEvents] = React.useState<any[]>([]);
     const {state, dispatch} = useTrazoBackendContext();
-    const [deliveries, setDeliveries] = React.useState<any[]>([]);
-    const {customerList, orderList} = state;
+    const {customerList, orderList, deliveryList, deliveriesLoaded} = state;
+    const [modal, setModal] = React.useState(false);
+    const [modalData, setModalData] = React.useState<any>();
     const navigate = useNavigate();
     const handleEventClick = (info: any) => {
-      
-       alert(info.event.id);
+        const temp = deliveryList.find(delivery => delivery.id === info.event.id);
+        setModalData({
+            customerId: temp?.customerId,
+            orders: temp?.orders,
+            deliveryDate: temp?.deliveryDate
+        });
+        setModal(true);
+       alert(info.event.start);
     };
     useEffect(() => {
+        
+        if(deliveriesLoaded) {
+         
         const getEvents = async () => {
-            const deliveries = await getDeliveries();
-            setDeliveries(deliveries);
-            console.log(deliveries);
-            const eventsList = deliveries.map(delivery => {
+            const eventsList = deliveryList.map(delivery => {
                 const customer = customerList.find(customer => customer.id === delivery.customerId);
                 return {
                     id: delivery.id,
@@ -70,6 +78,7 @@ const OrderScreen: React.FC = () => {
             setEvents(eventsList);
         }
         getEvents();
+    }
     }, [])
     return (
         <div className='h-screen flex gap-10 flex-col'>
@@ -102,6 +111,7 @@ const OrderScreen: React.FC = () => {
  </StyleWrapper>
             </div>
             {add && <AddScreen onClose={() => setAdd(false)} />}
+            {modal && <EventModal onClose={() => setModal(false)} customerId={modalData.customerId} orders={modalData.orders} deliveryDate={modalData.deliveryDate} />}
         </div>
       
     );

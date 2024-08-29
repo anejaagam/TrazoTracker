@@ -1,6 +1,6 @@
 import type { Schema } from '../../amplify/data/resource'
 import { generateClient } from 'aws-amplify/data'
-import { Action } from './trazoBackend'
+import { Action , useTrazoBackendContext} from './trazoBackend'
 
 const client = generateClient<Schema>({ authMode: 'userPool' });
 
@@ -39,13 +39,15 @@ export interface Delivery {
     notes: string;
 }
 
-export const createCustomer = async (customer: Customer) => {
+export const createCustomer = async (dispatch: React.Dispatch<Action>, customer: Customer) => {
     if (!customer.id){
         customer.id = "IGPC"+ customer.brand.substring(0,3).toUpperCase()+ customer.locationName.substring(0,3).toUpperCase() ;
     }
     await client.models.Customer.create(customer);
+    dispatch({type:"SET_CUSTOMERS_LOADED", payload: false});
+
 }
-export const createOrder = async (order: Order) => {
+export const createOrder = async (dispatch: React.Dispatch<Action>, order: Order) => {
     const { data: data1, errors: errors1 } = await client.models.Order.create(order);
     console.log(errors1);
     const { data, errors } = await client.models.Delivery.deliveryByCustomerId({
@@ -63,14 +65,19 @@ export const createOrder = async (order: Order) => {
             notes: order.notes
         });
     } else {
+        const existingDelivery = data[0];
+      const updatedOrders = existingDelivery.orders ? [...existingDelivery.orders, data1?.id || ""] : [data1?.id || ""];
+      
         await client.models.Delivery.update({
             id: data[0].id,
-            orders: data[0]?.orders ? [...data[0].orders, order.id || ""] : [order.id || ""]
+            orders: updatedOrders
         });
     }
+    dispatch({type:"SET_ORDERS_LOADED", payload: false});
+    dispatch({type:"SET_DELIVERIES_LOADED", payload: false});
 }
 
-export const updateOrder = async (order: Order) => {
+export const updateOrder = async (dispatch: React.Dispatch<Action>, order: Order) => {
     if (order.id) {
         const { data: oldData, errors } = await client.models.Order.get({ id: order.id });
         const customerId = oldData?.customerId || " ";
@@ -116,9 +123,13 @@ export const updateOrder = async (order: Order) => {
             });
         }
     }
+    dispatch({type:"SET_ORDERS_LOADED", payload: false});
+ 
+   
+    dispatch({type:"SET_DELIVERIES_LOADED", payload: false});
 }
 
-export const deleteOrder = async (order: Order) => {
+export const deleteOrder = async (dispatch: React.Dispatch<Action>, order: Order) => {
     if (order.id) {
         const { data: oldData, errors } = await client.models.Order.get({ id: order.id });
         const customerId = oldData?.customerId || " ";
@@ -138,6 +149,9 @@ export const deleteOrder = async (order: Order) => {
         }
         await client.models.Order.delete({ id: order.id });
     }
+    dispatch({type:"SET_ORDERS_LOADED", payload: false});
+   
+    dispatch({type:"SET_DELIVERIES_LOADED", payload: false});
 }
 
 export const getCustomer = async (id: string) => {
@@ -163,7 +177,17 @@ export const getDeliveriesByDeliveryDate = async (deliveryDate: string) => {
 }
 export const getDeliveries = async () => {
     const { data, errors } = await client.models.Delivery.list();
-    return data;
+    const DeliveryList: Delivery[] = data.map((data) => {
+        return {
+            id: data.id,
+            orders: data.orders,
+            deliveryDate: data.deliveryDate,
+            deliveryMethod: data.deliveryMethod,
+            customerId: data.customerId,
+            notes: data.notes
+        } as Delivery; // Type assertion to Delivery
+    });
+    return DeliveryList;
 }
 export const getCustomerList = async () => {
     const { data, errors } = await client.models.Customer.list();
@@ -203,4 +227,11 @@ export const getOrderList = async () => {
         } as Order; // Type assertion to Order
     });
     return OrderList;
+}
+
+export const updateCustomer = async (dispatch: React.Dispatch<Action>, customer: Customer) => {
+    await client.models.Customer.update(
+        { id: customer.id || "", ...customer },
+    );
+    dispatch({type:"SET_CUSTOMERS_LOADED", payload: false});
 }
